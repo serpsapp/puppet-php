@@ -52,9 +52,16 @@ class php::extension::newrelic(
     provider => $provider
   }
 
+  # Skip using augeas, it's broken for empty values apparently
+  # and we don't need it
+  # see https://github.com/jippi/puppet-php/issues/107
+  # This is totally hacky and depends on nrsysmond
+  # But works for our usage for now
   php::config { 'php-extension-newrelic':
     file   => $inifile,
-    config => $settings
+    section => 'newrelic',
+    setting => 'newrelic.license',
+    value => $::nrsysmond::license_key,
   }
 
 }
